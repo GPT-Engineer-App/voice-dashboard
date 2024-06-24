@@ -112,9 +112,13 @@ function Index() {
                         <TableCell>{recording.duration}</TableCell>
                         <TableCell>{recording.analysed ? "Analysed" : "Not Analysed"}</TableCell>
                         <TableCell>
-                          <Button onClick={() => toggleAnalyse(recording.id)}>
-                            {recording.analysed ? "Unanalyse" : "Analyse"}
-                          </Button>
+                          {recording.analysed ? (
+                            <Button disabled>Analysed</Button>
+                          ) : (
+                            <Button onClick={() => toggleAnalyse(recording.id)}>
+                              Analyse
+                            </Button>
+                          )}
                         </TableCell>
                       </TableRow>
                     )}
