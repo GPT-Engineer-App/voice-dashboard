@@ -13,9 +13,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const recordingsData = [
-  { id: "1", name: "Recording 1", date: "2023-10-01", duration: "3:45" },
-  { id: "2", name: "Recording 2", date: "2023-10-02", duration: "2:30" },
-  { id: "3", name: "Recording 3", date: "2023-10-03", duration: "4:15" },
+  { id: "1", name: "Recording 1", date: "2023-10-01", duration: "3:45", analysed: false },
+  { id: "2", name: "Recording 2", date: "2023-10-02", duration: "2:30", analysed: false },
+  { id: "3", name: "Recording 3", date: "2023-10-03", duration: "4:15", analysed: false },
 ];
 
 function Index() {
@@ -39,6 +39,8 @@ function Index() {
           (parseInt(b.duration.split(":")[0]) * 60 +
             parseInt(b.duration.split(":")[1]))
         );
+      } else if (sortField === "analysed") {
+        return a.analysed === b.analysed ? 0 : a.analysed ? -1 : 1;
       }
       return 0;
     });
@@ -51,6 +53,14 @@ function Index() {
     items.splice(result.destination.index, 0, reorderedItem);
 
     setRecordings(items);
+  };
+
+  const toggleAnalyse = (id) => {
+    setRecordings((prevRecordings) =>
+      prevRecordings.map((recording) =>
+        recording.id === id ? { ...recording, analysed: !recording.analysed } : recording
+      )
+    );
   };
 
   return (
@@ -70,6 +80,7 @@ function Index() {
             <SelectItem value="name">Name</SelectItem>
             <SelectItem value="date">Date</SelectItem>
             <SelectItem value="duration">Duration</SelectItem>
+            <SelectItem value="analysed">Analysed</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={() => setSearchTerm("")}>Clear</Button>
@@ -83,6 +94,8 @@ function Index() {
                   <TableHead>Name</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Duration</TableHead>
+                  <TableHead>Tag</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -97,6 +110,12 @@ function Index() {
                         <TableCell>{recording.name}</TableCell>
                         <TableCell>{recording.date}</TableCell>
                         <TableCell>{recording.duration}</TableCell>
+                        <TableCell>{recording.analysed ? "Analysed" : "Not Analysed"}</TableCell>
+                        <TableCell>
+                          <Button onClick={() => toggleAnalyse(recording.id)}>
+                            {recording.analysed ? "Unanalyse" : "Analyse"}
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     )}
                   </Draggable>
