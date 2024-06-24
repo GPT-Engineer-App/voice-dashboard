@@ -10,18 +10,20 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 const recordingsData = [
-  { name: "Recording 1", date: "2023-10-01", duration: "3:45" },
-  { name: "Recording 2", date: "2023-10-02", duration: "2:30" },
-  { name: "Recording 3", date: "2023-10-03", duration: "4:15" },
+  { id: "1", name: "Recording 1", date: "2023-10-01", duration: "3:45" },
+  { id: "2", name: "Recording 2", date: "2023-10-02", duration: "2:30" },
+  { id: "3", name: "Recording 3", date: "2023-10-03", duration: "4:15" },
 ];
 
 function Index() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortField, setSortField] = useState("name");
+  const [recordings, setRecordings] = useState(recordingsData);
 
-  const filteredRecordings = recordingsData
+  const filteredRecordings = recordings
     .filter((recording) =>
       recording.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
@@ -40,6 +42,16 @@ function Index() {
       }
       return 0;
     });
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(recordings);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setRecordings(items);
+  };
 
   return (
     <div className="p-4">
@@ -62,24 +74,39 @@ function Index() {
         </Select>
         <Button onClick={() => setSearchTerm("")}>Clear</Button>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Duration</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredRecordings.map((recording, index) => (
-            <TableRow key={index}>
-              <TableCell>{recording.name}</TableCell>
-              <TableCell>{recording.date}</TableCell>
-              <TableCell>{recording.duration}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="recordings">
+          {(provided) => (
+            <Table {...provided.droppableProps} ref={provided.innerRef}>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Duration</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredRecordings.map((recording, index) => (
+                  <Draggable key={recording.id} draggableId={recording.id} index={index}>
+                    {(provided) => (
+                      <TableRow
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <TableCell>{recording.name}</TableCell>
+                        <TableCell>{recording.date}</TableCell>
+                        <TableCell>{recording.duration}</TableCell>
+                      </TableRow>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </TableBody>
+            </Table>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }
