@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Bell,
   CircleUser,
@@ -51,13 +52,13 @@ function SharedLayout({ children }) {
                 <Home className="h-4 w-4" />
                 Home
               </a>
-              <a
-                href="#"
+              <Link
+                to="/voice-recording"
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <Mic className="h-4 w-4" />
                 Voice Recording
-              </a>
+              </Link>
             </nav>
           </div>
         </div>
@@ -91,13 +92,13 @@ function SharedLayout({ children }) {
                   <Home className="h-5 w-5" />
                   Home
                 </a>
-                <a
-                  href="#"
+                <Link
+                  to="/voice-recording"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl bg-muted px-3 py-2 text-foreground hover:text-foreground"
                 >
                   <Mic className="h-5 w-5" />
                   Voice Recording
-                </a>
+                </Link>
                 <a
                   href="#"
                   className="mx-[-0.65rem] flex items-center gap-4 rounded-xl px-3 py-2 text-muted-foreground hover:text-foreground"
