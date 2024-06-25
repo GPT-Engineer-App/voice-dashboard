@@ -34,7 +34,7 @@ const VoiceRecording = () => {
           <Button onClick={startRecording}>Start Recording</Button>
         )}
       </div>
-      {audioURL &amp;&amp; (
+      {audioURL && (
         <div>
           <h2 className="text-xl font-semibold mb-2">Recorded Audio:</h2>
           <audio ref={audioRef} controls src={audioURL} />
