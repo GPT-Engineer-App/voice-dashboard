@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 const VoiceRecording = () => {
@@ -6,6 +6,13 @@ const VoiceRecording = () => {
   const [audioURL, setAudioURL] = useState("");
   const mediaRecorderRef = useRef(null);
   const audioRef = useRef(null);
+
+  useEffect(() => {
+    document.body.classList.add("bg-background", "text-foreground");
+    return () => {
+      document.body.classList.remove("bg-background", "text-foreground");
+    };
+  }, []);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
